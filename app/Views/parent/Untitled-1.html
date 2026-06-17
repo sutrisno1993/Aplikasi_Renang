@@ -1,0 +1,71 @@
+<!-- Modal Daftar Jadwal -->
+<!-- Modal Daftar Jadwal -->
+<div class="modal fade" id="daftarJadwalModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Daftar Jadwal Les</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <form action="<?= base_url('parent/daftar-jadwal') ?>" method="post">
+                <?= csrf_field() ?>
+                <div class="modal-body">
+                    <input type="hidden" name="schedule_id" id="schedule_id">
+                    <div class="form-group">
+                        <label>Detail Jadwal:</label>
+                        <p id="detail_jadwal" class="font-weight-bold"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="anak_id">Pilih Anak:</label>
+                        <select name="anak_id" id="anak_id" class="form-control" required>
+                            <option value="">-- Pilih Anak --</option>
+                            <?php foreach($anak as $a): ?>
+                                <option value="<?= $a['id'] ?>"><?= $a['nama'] ?> (Sisa: <?= $a['sisa_pertemuan'] ?> pertemuan)</option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Daftar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Script untuk Modal Daftar Jadwal -->
+<script>
+$(document).ready(function() {
+    $('#daftarJadwalModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var scheduleId = button.data('jadwal-id');
+        var tanggal = button.data('tanggal');
+        var waktu = button.data('waktu');
+        var materi = button.data('materi');
+        
+        console.log('Schedule ID:', scheduleId); // Debug log
+        
+        var modal = $(this);
+        modal.find('input[name="schedule_id"]').val(scheduleId);
+        modal.find('#detail_jadwal').html(
+            'Tanggal: ' + tanggal + '<br>' +
+            'Waktu: ' + waktu + '<br>' +
+            'Materi: ' + materi
+        );
+    });
+
+    // Validasi form sebelum submit
+    $('#daftarJadwalModal form').on('submit', function(e) {
+        var scheduleId = $('#schedule_id').val();
+        if (!scheduleId) {
+            e.preventDefault();
+            alert('Data jadwal tidak valid!');
+            return false;
+        }
+        console.log('Form submitted with schedule_id:', scheduleId); // Debug log
+    });
+});
+</script>

@@ -12,9 +12,6 @@ namespace Config;
  * share a system folder between multiple applications, and more.
  *
  * All paths are relative to the project's root folder.
- *
- * NOTE: This class is required prior to Autoloader instantiation,
- *       and does not extend BaseConfig.
  */
 class Paths
 {
@@ -75,16 +72,4 @@ class Paths
      * is used when no value is provided to `Services::renderer()`.
      */
     public string $viewDirectory = __DIR__ . '/../Views';
-
-    /**
-     * ---------------------------------------------------------------
-     * ENVIRONMENT DIRECTORY NAME
-     * ---------------------------------------------------------------
-     *
-     * This variable must contain the name of the directory where
-     * the .env file is located.
-     * Please consider security implications when changing this
-     * value - the directory should not be publicly accessible.
-     */
-    public string $envDirectory = __DIR__ . '/../../';
 }

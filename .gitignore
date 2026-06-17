@@ -124,3 +124,11 @@ _modules/*
 
 /results/
 /phpunit*.xml
+
+#-------------------------
+# Custom Temp & Scratch Files (Aplikasi Renang)
+#-------------------------
+/*.zip
+/scratch.php
+/temp_migration.php
+/add_extra_113.php
