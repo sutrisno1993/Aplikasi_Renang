@@ -248,8 +248,18 @@ class Kedatangan extends BaseController
         }
 
         $db = \Config\Database::connect();
+        
+        // Ambil semua coach yang terdaftar pada jadwal ini
+        $coaches = $db->table('schedule_coaches')
+                      ->where('schedule_id', $jadwal_id)
+                      ->get()
+                      ->getResultArray();
 
-        foreach ($coach_status as $coach_id => $status) {
+        foreach ($coaches as $c) {
+            $coach_id = $c['coach_id'];
+            // Jika tercentang di form post, status = hadir, jika tidak = tidak_hadir
+            $status = isset($coach_status[$coach_id]) ? 'hadir' : 'tidak_hadir';
+            
             $db->table('schedule_coaches')
                ->where('schedule_id', $jadwal_id)
                ->where('coach_id', $coach_id)
