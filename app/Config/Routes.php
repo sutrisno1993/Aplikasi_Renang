@@ -224,6 +224,7 @@ $routes->group('admin', ['filter' => 'auth'], static function ($routes) {
     $routes->get('kedatangan/search-anak', 'Admin\Kedatangan::searchAnak');
     $routes->post('kedatangan/save-all-absensi', 'Admin\Kedatangan::saveAllAbsensi');
     $routes->post('kedatangan/update-absensi/(:num)', 'Admin\Kedatangan::updateAbsensi/$1');
+    $routes->post('kedatangan/save-coach-absensi', 'Admin\Kedatangan::saveCoachAbsensi');
     $routes->get('kedatangan/delete-absensi/(:num)', 'Admin\Kedatangan::deleteAbsensi/$1');
     $routes->get('kedatangan/delete-peserta/(:num)/(:num)', 'Admin\Kedatangan::deletePeserta/$1/$2');
     $routes->get('kedatangan/buka/(:num)', 'Admin\Kedatangan::buka/$1');
@@ -246,6 +247,7 @@ $routes->group('admin', ['filter' => 'auth'], static function ($routes) {
     $routes->post('coach/update/(:num)', 'Admin::coachUpdate/$1');
     $routes->get('coach/delete/(:num)', 'Admin::coachDelete/$1');
     $routes->get('coach/toggle-registration', 'Admin::toggleCoachRegistration');
+    $routes->post('coach/set-role/(:num)', 'Admin::coachSetRole/$1');
 
     // Logo Management Routes
     $routes->group('logo', static function ($routes) {

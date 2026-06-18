@@ -225,10 +225,39 @@ class Kedatangan extends BaseController
                 'total' => count($peserta),
                 'private' => $count_private,
                 'reguler' => $count_reguler
-            ]
+            ],
+            'coaches_jadwal' => \Config\Database::connect()
+                ->table('schedule_coaches sc')
+                ->select('c.id, c.nama, c.keahlian, sc.status as status_hadir')
+                ->join('coach c', 'c.id = sc.coach_id')
+                ->where('sc.schedule_id', $jadwal_id)
+                ->get()
+                ->getResultArray()
         ];
 
         return view('admin/kedatangan/absensi', $data);
+    }
+
+    public function saveCoachAbsensi()
+    {
+        $jadwal_id = $this->request->getPost('jadwal_id');
+        $coach_status = $this->request->getPost('coach_status') ?? [];
+
+        if (!$jadwal_id) {
+            return redirect()->back()->with('error', 'ID Jadwal tidak valid.');
+        }
+
+        $db = \Config\Database::connect();
+
+        foreach ($coach_status as $coach_id => $status) {
+            $db->table('schedule_coaches')
+               ->where('schedule_id', $jadwal_id)
+               ->where('coach_id', $coach_id)
+               ->update(['status' => $status]);
+        }
+
+        return redirect()->to('admin/kedatangan/absensi/' . $jadwal_id)
+                        ->with('success', 'Absensi pelatih berhasil disimpan.');
     }
 
     /**

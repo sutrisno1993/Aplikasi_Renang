@@ -322,6 +322,33 @@ class Admin extends BaseController
         return redirect()->to('admin/coach');
     }
 
+    public function coachSetRole($id)
+    {
+        $coach = $this->coachModel->find($id);
+        if (!$coach) {
+            session()->setFlashdata('error', 'Data pelatih tidak ditemukan.');
+            return redirect()->to('admin/coach');
+        }
+
+        $role = $this->request->getPost('role');
+        if (!in_array($role, ['head_coach', 'coach'])) {
+            session()->setFlashdata('error', 'Role tidak valid.');
+            return redirect()->to('admin/coach');
+        }
+
+        // Jika jadikan head_coach: reset semua coach lain ke 'coach' dulu
+        if ($role === 'head_coach') {
+            $this->coachModel->where('id !=', $id)->set(['role' => 'coach'])->update();
+            $this->coachModel->update($id, ['role' => 'head_coach']);
+            session()->setFlashdata('success', esc($coach['nama']) . ' berhasil dijadikan Head Coach. Coach lain direset ke role Coach.');
+        } else {
+            $this->coachModel->update($id, ['role' => 'coach']);
+            session()->setFlashdata('success', 'Role ' . esc($coach['nama']) . ' berhasil diubah menjadi Coach.');
+        }
+
+        return redirect()->to('admin/coach');
+    }
+
     public function cetakPembayaran($id)
     {
         $pembayaranModel = new \App\Models\PembayaranModel();

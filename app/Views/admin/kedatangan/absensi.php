@@ -121,6 +121,52 @@
             </div>
 
             <!-- Form untuk menyimpan semua data -->
+            <?php if (!empty($coaches_jadwal)): ?>
+            <div class="card mb-3 border-0 shadow-sm" style="border-left: 4px solid #059669 !important;">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center py-2">
+                    <h6 class="mb-0 fw-bold text-success">
+                        <i class="fas fa-chalkboard-teacher me-2"></i>Absensi Pelatih
+                        <span class="badge bg-success ms-2"><?= count($coaches_jadwal) ?> Pelatih</span>
+                    </h6>
+                    <small class="text-muted">Tandai kehadiran pelatih lalu simpan</small>
+                </div>
+                <div class="card-body py-2">
+                    <form action="<?= base_url('admin/kedatangan/save-coach-absensi') ?>" method="post">
+                        <?= csrf_field() ?>
+                        <input type="hidden" name="jadwal_id" value="<?= $jadwal['id'] ?>">
+                        <div class="d-flex flex-wrap gap-3 align-items-center">
+                            <?php foreach ($coaches_jadwal as $c):
+                                $statusHadir = $c['status_hadir'] ?? null;
+                                $isHadir     = ($statusHadir === 'hadir');
+                                $isTidak     = ($statusHadir === 'tidak_hadir');
+                            ?>
+                            <div class="d-flex align-items-center gap-2 border rounded-3 px-3 py-2"
+                                 style="background: <?= $isHadir ? '#f0fdf4' : ($isTidak ? '#fef2f2' : '#f9fafb') ?>;">
+                                <div class="bg-light rounded-circle p-1 text-success" style="width:32px;height:32px;display:grid;place-items:center;">
+                                    <i class="fas fa-user-tie" style="font-size:13px;"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold small"><?= esc($c['nama']) ?></div>
+                                    <div class="text-muted" style="font-size:11px;"><?= esc($c['keahlian'] ?: 'Pelatih') ?></div>
+                                </div>
+                                <select name="coach_status[<?= $c['id'] ?>]" class="form-select form-select-sm ms-2" style="width:130px;">
+                                    <option value="">— Pilih —</option>
+                                    <option value="hadir"        <?= $isHadir  ? 'selected' : '' ?>>✅ Hadir</option>
+                                    <option value="tidak_hadir"  <?= $isTidak  ? 'selected' : '' ?>>❌ Tidak Hadir</option>
+                                </select>
+                            </div>
+                            <?php endforeach; ?>
+                        </div>
+                        <div class="mt-3">
+                            <button type="submit" class="btn btn-success btn-sm px-4">
+                                <i class="fas fa-save me-1"></i> Simpan Absensi Pelatih
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <?php endif; ?>
+
             <form id="absensiForm" action="<?= base_url('admin/kedatangan/save-all-absensi') ?>" method="post">
                 <?= csrf_field() ?>
                 <input type="hidden" name="jadwal_id" value="<?= $jadwal['id'] ?>">

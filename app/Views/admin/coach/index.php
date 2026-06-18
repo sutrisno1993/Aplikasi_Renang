@@ -130,12 +130,34 @@
                                     <?php endif; ?>
                                 </td>
                                 <td class="text-center">
+                                    <!-- Edit -->
                                     <button type="button" class="btn btn-sm btn-light border rounded-circle p-2 text-info me-1 shadow-sm" 
                                             data-bs-toggle="modal" 
                                             data-bs-target="#editCoachModal<?= $coach['id'] ?>"
                                             title="Edit Data Pelatih">
                                         <i class="fas fa-edit"></i>
                                     </button>
+                                    <!-- Set Role -->
+                                    <?php if ($coach['role'] !== 'head_coach'): ?>
+                                    <form action="<?= base_url('admin/coach/set-role/' . $coach['id']) ?>" method="post" class="d-inline"
+                                          onsubmit="return confirm('Jadikan <?= esc($coach['nama']) ?> sebagai Head Coach? Head Coach sebelumnya akan dikembalikan ke role Coach.')">
+                                        <?= csrf_field() ?>
+                                        <input type="hidden" name="role" value="head_coach">
+                                        <button type="submit" class="btn btn-sm btn-warning rounded-pill px-2 shadow-sm me-1" title="Jadikan Head Coach">
+                                            <i class="fas fa-star me-1"></i>Head Coach
+                                        </button>
+                                    </form>
+                                    <?php else: ?>
+                                    <form action="<?= base_url('admin/coach/set-role/' . $coach['id']) ?>" method="post" class="d-inline"
+                                          onsubmit="return confirm('Cabut status Head Coach dari <?= esc($coach['nama']) ?>?')">
+                                        <?= csrf_field() ?>
+                                        <input type="hidden" name="role" value="coach">
+                                        <button type="submit" class="btn btn-sm btn-outline-warning rounded-pill px-2 me-1" title="Cabut Head Coach">
+                                            <i class="fas fa-times me-1"></i>Cabut HC
+                                        </button>
+                                    </form>
+                                    <?php endif; ?>
+                                    <!-- Hapus -->
                                     <a href="<?= base_url('admin/coach/delete/' . $coach['id']) ?>" 
                                        class="btn btn-sm btn-light border rounded-circle p-2 text-danger shadow-sm" 
                                        onclick="return confirm('Apakah Anda yakin ingin menghapus pelatih ini? Siswa yang dibimbing oleh pelatih ini akan kehilangan bimbingan pelatih.')"
