@@ -215,9 +215,14 @@
                                         <span class="font-weight-bold text-dark small d-block"><?= esc($crt['nama_level']) ?></span>
                                         <small class="text-muted"><?= esc($crt['nomor_sertifikat']) ?></small>
                                     </div>
-                                    <a href="<?= base_url('parent/certificate/download/' . $c['id'] . '/' . $crt['level_id']) ?>" target="_blank" class="btn btn-sm btn-primary rounded-pill px-3 shadow-sm">
-                                        <i class="fas fa-file-pdf mr-1"></i> Unduh
-                                    </a>
+                                    <div>
+                                        <a href="<?= base_url('parent/certificate/download/' . $c['id'] . '/' . $crt['level_id']) ?>" target="_blank" class="btn btn-sm btn-primary rounded-pill px-3 shadow-sm mr-2">
+                                            <i class="fas fa-certificate mr-1"></i> Sertifikat
+                                        </a>
+                                        <a href="<?= base_url('parent/raport/download/' . $c['id'] . '/' . $crt['level_id']) ?>" target="_blank" class="btn btn-sm btn-outline-info rounded-pill px-3 shadow-sm">
+                                            <i class="fas fa-file-invoice mr-1"></i> Raport
+                                        </a>
+                                    </div>
                                 </div>
                             <?php endforeach; ?>
                         </div>

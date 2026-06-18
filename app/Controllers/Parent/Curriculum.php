@@ -122,4 +122,44 @@ class Curriculum extends BaseController
 
         return view('certificate/print', $data);
     }
+
+    public function downloadRaport($anakId, $levelId)
+    {
+        if (!$this->checkAuth()) {
+            return redirect()->to('/parent/login');
+        }
+
+        $parentId = session()->get('parent_id');
+        
+        // Verify child belongs to parent
+        $child = $this->anakModel->where('id', $anakId)
+                                 ->where('parent_id', $parentId)
+                                 ->first();
+
+        if (!$child) {
+            session()->setFlashdata('error', 'Siswa tidak ditemukan.');
+            return redirect()->to('parent/curriculum');
+        }
+
+        $certificate = $this->sertifikatModel->select('sertifikat_digital.*, swimming_levels.nama_level, swimming_levels.deskripsi as level_deskripsi, ujian_kenaikan.id as ujian_id, ujian_kenaikan.tanggal as tanggal_lulus, ujian_kenaikan.tournament_name, ujian_kenaikan.prestasi, ujian_kenaikan.catatan_evaluasi, ujian_kenaikan.teknik_kaki, ujian_kenaikan.teknik_tangan, ujian_kenaikan.teknik_pernapasan, ujian_kenaikan.keberanian, ujian_kenaikan.disiplin, ujian_kenaikan.sikap_fokus, coach.nama as nama_penguji')
+                                             ->join('swimming_levels', 'swimming_levels.id = sertifikat_digital.level_id')
+                                             ->join('ujian_kenaikan', 'ujian_kenaikan.id = sertifikat_digital.ujian_id')
+                                             ->join('coach', 'coach.id = ujian_kenaikan.examiner_id', 'left')
+                                             ->where('sertifikat_digital.anak_id', $anakId)
+                                             ->where('sertifikat_digital.level_id', $levelId)
+                                             ->first();
+
+        if (!$certificate) {
+            session()->setFlashdata('error', 'Raport tidak ditemukan.');
+            return redirect()->to('parent/curriculum');
+        }
+
+        $data = [
+            'title' => 'Raport Evaluasi ' . $child['nama'],
+            'child' => $child,
+            'cert' => $certificate
+        ];
+
+        return view('certificate/raport', $data);
+    }
 }
