@@ -521,6 +521,12 @@
             </li>
 
             <li class="nav-item mt-auto pt-3 border-top border-secondary border-opacity-25">
+                <a class="nav-link <?= (str_starts_with(uri_string(), 'admin/logo')) ? 'active' : '' ?>" href="<?= base_url('admin/logo') ?>">
+                    <i class="fas fa-images"></i> Kelola Logo
+                </a>
+            </li>
+
+            <li class="nav-item">
                 <a class="nav-link <?= (str_starts_with(uri_string(), 'admin/settings')) ? 'active' : '' ?>" href="<?= base_url('admin/settings') ?>">
                     <i class="fas fa-cogs"></i> Pengaturan Sistem
                 </a>

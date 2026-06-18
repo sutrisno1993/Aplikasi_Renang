@@ -237,6 +237,14 @@ $routes->group('admin', ['filter' => 'auth'], static function ($routes) {
     $routes->post('coach/update/(:num)', 'Admin::coachUpdate/$1');
     $routes->get('coach/delete/(:num)', 'Admin::coachDelete/$1');
     $routes->get('coach/toggle-registration', 'Admin::toggleCoachRegistration');
+
+    // Logo Management Routes
+    $routes->group('logo', static function ($routes) {
+        $routes->get('/', 'Admin\LogoController::index');
+        $routes->post('store', 'Admin\LogoController::store');
+        $routes->post('update/(:num)', 'Admin\LogoController::update/$1');
+        $routes->get('delete/(:num)', 'Admin\LogoController::delete/$1');
+    });
 });
 
 // (coach routes are defined above, before the admin group)
