@@ -392,4 +392,108 @@ class Curriculum extends BaseController
 
         return redirect()->to('admin/curriculum/ujian');
     }
+
+    public function sertifikatRaportList()
+    {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/auth');
+        }
+
+        // Fetch all children with their graduated levels (certificates)
+        $students = $this->anakModel->orderBy('nama', 'ASC')->findAll();
+
+        $studentCerts = [];
+        foreach ($students as $s) {
+            $certs = $this->sertifikatModel->select('sertifikat_digital.*, swimming_levels.nama_level')
+                                           ->join('swimming_levels', 'swimming_levels.id = sertifikat_digital.level_id')
+                                           ->where('sertifikat_digital.anak_id', $s['id'])
+                                           ->findAll();
+
+            if (!empty($certs)) {
+                $studentCerts[] = [
+                    'student' => $s,
+                    'certs' => $certs
+                ];
+            }
+        }
+
+        $data = [
+            'title' => 'Sertifikat & Raport Siswa',
+            'active' => 'curriculum',
+            'studentCerts' => $studentCerts
+        ];
+
+        return view('admin/curriculum/sertifikat_raport', $data);
+    }
+
+    public function printCertificate($anakId, $levelId)
+    {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/auth');
+        }
+
+        $child = $this->anakModel->find($anakId);
+        if (!$child) {
+            session()->setFlashdata('error', 'Siswa tidak ditemukan.');
+            return redirect()->to('admin/curriculum/sertifikat-raport');
+        }
+
+        $certificate = $this->sertifikatModel->select('sertifikat_digital.*, swimming_levels.nama_level, ujian_kenaikan.tanggal as tanggal_lulus, ujian_kenaikan.tournament_name, ujian_kenaikan.prestasi')
+                                             ->join('swimming_levels', 'swimming_levels.id = sertifikat_digital.level_id')
+                                             ->join('ujian_kenaikan', 'ujian_kenaikan.id = sertifikat_digital.ujian_id')
+                                             ->where('sertifikat_digital.anak_id', $anakId)
+                                             ->where('sertifikat_digital.level_id', $levelId)
+                                             ->first();
+
+        if (!$certificate) {
+            session()->setFlashdata('error', 'Sertifikat tidak ditemukan.');
+            return redirect()->to('admin/curriculum/sertifikat-raport');
+        }
+
+        $headCoach = $this->coachModel->where('role', 'head_coach')->first();
+        $headCoachName = $headCoach ? $headCoach['nama'] : 'Heri Setiawan';
+
+        $data = [
+            'title' => 'Sertifikat Digital ' . $child['nama'],
+            'child' => $child,
+            'cert' => $certificate,
+            'headCoachName' => $headCoachName
+        ];
+
+        return view('certificate/print', $data);
+    }
+
+    public function printRaport($anakId, $levelId)
+    {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/auth');
+        }
+
+        $child = $this->anakModel->find($anakId);
+        if (!$child) {
+            session()->setFlashdata('error', 'Siswa tidak ditemukan.');
+            return redirect()->to('admin/curriculum/sertifikat-raport');
+        }
+
+        $certificate = $this->sertifikatModel->select('sertifikat_digital.*, swimming_levels.nama_level, swimming_levels.deskripsi as level_deskripsi, ujian_kenaikan.id as ujian_id, ujian_kenaikan.tanggal as tanggal_lulus, ujian_kenaikan.tournament_name, ujian_kenaikan.prestasi, ujian_kenaikan.catatan_evaluasi, ujian_kenaikan.teknik_kaki, ujian_kenaikan.teknik_tangan, ujian_kenaikan.teknik_pernapasan, ujian_kenaikan.keberanian, ujian_kenaikan.disiplin, ujian_kenaikan.sikap_fokus, coach.nama as nama_penguji')
+                                             ->join('swimming_levels', 'swimming_levels.id = sertifikat_digital.level_id')
+                                             ->join('ujian_kenaikan', 'ujian_kenaikan.id = sertifikat_digital.ujian_id')
+                                             ->join('coach', 'coach.id = ujian_kenaikan.examiner_id', 'left')
+                                             ->where('sertifikat_digital.anak_id', $anakId)
+                                             ->where('sertifikat_digital.level_id', $levelId)
+                                             ->first();
+
+        if (!$certificate) {
+            session()->setFlashdata('error', 'Raport tidak ditemukan.');
+            return redirect()->to('admin/curriculum/sertifikat-raport');
+        }
+
+        $data = [
+            'title' => 'Raport Evaluasi ' . $child['nama'],
+            'child' => $child,
+            'cert' => $certificate
+        ];
+
+        return view('certificate/raport', $data);
+    }
 }

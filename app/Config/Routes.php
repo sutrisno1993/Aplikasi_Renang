@@ -127,6 +127,9 @@ $routes->group('admin', ['filter' => 'auth'], static function ($routes) {
     $routes->post('curriculum/ujian/rekomendasi', 'Admin\Curriculum::rekomendasiUjian');
     $routes->get('curriculum/ujian/evaluasi/(:num)', 'Admin\Curriculum::evaluasiUjian/$1');
     $routes->post('curriculum/ujian/evaluasi/store', 'Admin\Curriculum::evaluasiUjianStore');
+    $routes->get('curriculum/sertifikat-raport', 'Admin\Curriculum::sertifikatRaportList');
+    $routes->get('curriculum/certificate/print/(:num)/(:num)', 'Admin\Curriculum::printCertificate/$1/$2');
+    $routes->get('curriculum/raport/print/(:num)/(:num)', 'Admin\Curriculum::printRaport/$1/$2');
 
     $routes->get('anak', 'Admin\Anak::index');
     $routes->get('anak/detail/(:num)', 'Admin\Anak::detail/$1');

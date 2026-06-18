@@ -183,6 +183,13 @@ class Anak extends BaseController
         $kehadiran = $this->anakModel->annotateKehadiranWithPaket((int) $id, $kehadiran);
         $anak['sisa_pertemuan'] = $breakdown['sisa_total'];
 
+        $sertifikatModel = new \App\Models\SertifikatModel();
+        $certificates = $sertifikatModel->select('sertifikat_digital.*, swimming_levels.nama_level, ujian_kenaikan.tanggal as tanggal_lulus')
+                                         ->join('swimming_levels', 'swimming_levels.id = sertifikat_digital.level_id')
+                                         ->join('ujian_kenaikan', 'ujian_kenaikan.id = sertifikat_digital.ujian_id')
+                                         ->where('sertifikat_digital.anak_id', $id)
+                                         ->findAll();
+
         $data = [
             'title' => 'Detail Anak',
             'anak' => $anak,
@@ -191,6 +198,7 @@ class Anak extends BaseController
             'detail_sisa' => $breakdown['detail_sisa'],
             'breakdown' => $breakdown,
             'history_groups' => $breakdown['history_groups'],
+            'certificates' => $certificates
         ];
 
         return view('admin/anak/detail', $data);

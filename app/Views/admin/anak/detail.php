@@ -338,6 +338,53 @@
                     </div>
                 </div>
             </div>
+
+            <div class="row mt-4">
+                <div class="col-12">
+                    <h5>Sertifikat & Raport Kenaikan Tingkat</h5>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th width="60">No</th>
+                                    <th>Tingkat Kelulusan</th>
+                                    <th>Nomor Sertifikat</th>
+                                    <th>Tanggal Kelulusan</th>
+                                    <th class="text-center" width="280">Aksi Dokumen</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php if (!empty($certificates)): ?>
+                                    <?php $no = 1; foreach ($certificates as $crt): ?>
+                                        <tr>
+                                            <td><?= $no++ ?></td>
+                                            <td>
+                                                <span class="badge bg-success rounded-pill px-3 py-1 fw-bold"><?= esc($crt['nama_level']) ?></span>
+                                            </td>
+                                            <td>
+                                                <code class="text-dark bg-light px-2 py-1 rounded small border fw-bold"><?= esc($crt['nomor_sertifikat']) ?></code>
+                                            </td>
+                                            <td><?= date('d-m-Y', strtotime($crt['tanggal_lulus'])) ?></td>
+                                            <td class="text-center">
+                                                <a href="<?= base_url('admin/curriculum/certificate/print/' . $anak['id'] . '/' . $crt['level_id']) ?>" target="_blank" class="btn btn-sm btn-primary rounded-pill px-3 me-2 shadow-sm">
+                                                    <i class="fas fa-certificate me-1"></i> Cetak Sertifikat
+                                                </a>
+                                                <a href="<?= base_url('admin/curriculum/raport/print/' . $anak['id'] . '/' . $crt['level_id']) ?>" target="_blank" class="btn btn-sm btn-outline-info rounded-pill px-3 shadow-sm">
+                                                    <i class="fas fa-file-invoice me-1"></i> Cetak Raport
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted">Belum ada riwayat kelulusan level untuk anak ini</td>
+                                    </tr>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

@@ -409,10 +409,29 @@
                     <i class="fas fa-user-tie"></i> Pelatih
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link <?= ($active == 'curriculum') ? 'active' : '' ?>" href="<?= base_url('admin/curriculum') ?>">
+            <!-- Menu Kurikulum & Ujian -->
+            <li class="nav-item <?= ($active == 'curriculum') ? 'menu-open' : '' ?>">
+                <a class="nav-link <?= ($active == 'curriculum') ? 'active' : '' ?>" href="#">
                     <i class="fas fa-graduation-cap"></i> Kurikulum & Ujian
+                    <i class="right fas fa-angle-left"></i>
                 </a>
+                <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                        <a class="nav-link <?= (uri_string() == 'admin/curriculum') ? 'active' : '' ?>" href="<?= base_url('admin/curriculum') ?>">
+                            <i class="far fa-circle"></i> Kelola Level & Siswa
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link <?= (str_starts_with(uri_string(), 'admin/curriculum/ujian')) ? 'active' : '' ?>" href="<?= base_url('admin/curriculum/ujian') ?>">
+                            <i class="far fa-circle"></i> Ujian Kenaikan Tingkat
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link <?= (str_starts_with(uri_string(), 'admin/curriculum/sertifikat-raport')) ? 'active' : '' ?>" href="<?= base_url('admin/curriculum/sertifikat-raport') ?>">
+                            <i class="far fa-circle"></i> Sertifikat & Raport
+                        </a>
+                    </li>
+                </ul>
             </li>
             
             <!-- Menu Jadwal -->
