@@ -454,7 +454,7 @@
                 <div class="topbar-inner">
                     <div class="left">
                         <div class="logo" aria-hidden="true">
-                            <img src="<?= base_url('logo.png?v=' . time()) ?>" alt="Logo" style="width: 100%; height: 100%; object-fit: contain; border-radius: 10px;">
+                            <img src="<?= app_logo('sportcenter_logo', 'logo.png') ?>" alt="Logo" style="width: 100%; height: 100%; object-fit: contain; border-radius: 10px;">
                         </div>
                         <div class="title">
                             <strong>Register Orang Tua / Wali</strong>

@@ -37,7 +37,7 @@
 
 <div class="print-container">
     <div class="header-report">
-        <img src="<?= base_url('logo.png') ?>" alt="Logo" class="logo-report">
+        <img src="<?= app_logo('sportcenter_logo', 'logo.png') ?>" alt="Logo" class="logo-report">
         <h3 class="fw-bold mb-0">11 MARET SPORT CENTER</h3>
         <p class="text-muted mb-0">Les Private Renang - HR Swimming Family</p>
     </div>

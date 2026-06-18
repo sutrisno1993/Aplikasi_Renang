@@ -247,7 +247,7 @@
             <div class="topbar-inner">
                 <div class="top-left">
                     <div class="logo">
-                        <img src="<?= base_url('logo.png') ?>" alt="Logo" style="width:100%;height:100%;object-fit:contain;border-radius:8px;" onerror="this.style.display='none';this.parentElement.innerHTML='🏊'">
+                        <img src="<?= app_logo('sportcenter_logo', 'logo.png') ?>" alt="Logo" style="width:100%;height:100%;object-fit:contain;border-radius:8px;" onerror="this.style.display='none';this.parentElement.innerHTML='🏊'">
                     </div>
                     <div class="brand">
                         <p class="brand-title">Portal Pelatih</p>

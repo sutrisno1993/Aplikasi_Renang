@@ -33,11 +33,17 @@
             height: 100%;
             border: 6px double #D4AF37; /* Gold border */
             border-radius: 4px;
-            padding: 30px 40px;
+            padding: 25px 50px 15px 50px;
             box-sizing: border-box;
             position: relative;
             text-align: center;
-            background-image: radial-gradient(circle, rgba(255,255,255,0) 0%, rgba(212,175,55,0.02) 100%);
+            background-color: #ffffff;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%234f46e5' fill-opacity='0.06' d='M0,224L60,213.3C120,203,240,181,360,186.7C480,192,600,224,720,234.7C840,245,960,235,1080,208C1200,181,1320,139,1380,117.3L1440,96L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z'%3E%3C/path%3E%3Cpath fill='%231a365d' fill-opacity='0.04' d='M0,128L60,149.3C120,171,240,213,360,208C480,203,600,149,720,144C840,139,960,181,1080,181.3C1200,181,1320,139,1380,117.3L1440,96L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: bottom;
+            display: flex;
+            flex-direction: column;
         }
 
         /* Watermark Background icon */
@@ -56,9 +62,9 @@
         .cert-header {
             font-family: 'Cinzel', serif;
             color: #1A365D;
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 700;
-            letter-spacing: 4px;
+            letter-spacing: 3px;
             margin-bottom: 5px;
             z-index: 2;
             position: relative;
@@ -70,7 +76,7 @@
             text-transform: uppercase;
             letter-spacing: 3px;
             color: #718096;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             font-weight: 600;
             z-index: 2;
             position: relative;
@@ -79,7 +85,7 @@
         .cert-title {
             font-family: 'Cinzel', serif;
             color: #D4AF37;
-            font-size: 38px;
+            font-size: 34px;
             font-weight: 700;
             letter-spacing: 2px;
             margin-bottom: 10px;
@@ -98,8 +104,9 @@
         }
 
         .cert-name {
-            font-family: 'Pinyon Script', cursive;
-            font-size: 52px;
+            font-family: 'Cinzel', serif;
+            font-size: 36px;
+            font-weight: 700;
             color: #1A365D;
             margin: 10px 0;
             line-height: 1;
@@ -117,10 +124,10 @@
         }
 
         .cert-text {
-            font-size: 14px;
+            font-size: 13px;
             color: #4A5568;
             max-width: 600px;
-            margin: 0 auto 25px auto;
+            margin: 0 auto 10px auto;
             line-height: 1.6;
             z-index: 2;
             position: relative;
@@ -135,8 +142,8 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
-            margin-top: 20px;
-            padding: 0 40px;
+            margin-top: auto;
+            padding: 0 30px;
             z-index: 2;
             position: relative;
         }
@@ -163,9 +170,10 @@
         }
 
         .cert-seal {
-            width: 90px;
-            height: 90px;
+            width: 75px;
+            height: 75px;
             position: relative;
+            margin-bottom: -10px;
         }
 
         .seal-gold {
@@ -191,14 +199,14 @@
         }
 
         .cert-serial {
-            position: absolute;
-            bottom: 25px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 9px;
-            letter-spacing: 1.5px;
-            color: #A0AEC0;
+            font-size: 10px;
+            letter-spacing: 2px;
+            color: #718096;
             text-transform: uppercase;
+            text-align: center;
+            margin-top: -5px;
+            margin-bottom: 20px;
+            font-weight: 600;
             z-index: 2;
         }
 
@@ -271,7 +279,13 @@
         <div class="cert-inner">
             <div class="cert-watermark"><i class="fas fa-swimming-pool"></i></div>
 
-            <div class="cert-header">11 MARET SPORT CENTER</div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 40px; margin-bottom: 5px; margin-top: -10px; position: relative; z-index: 2;">
+                <img src="<?= app_logo('sportcenter_logo') ?>" alt="Sport Center" style="height: 70px; width: auto; object-fit: contain;">
+                <img src="<?= app_logo('bapopsi_logo') ?>" alt="Bapopsi" style="height: 55px; width: auto; object-fit: contain;">
+                <img src="<?= app_logo('hrs_logo') ?>" alt="HRS" style="height: 55px; width: auto; object-fit: contain;">
+            </div>
+
+            <div class="cert-header">11 MARET SPORT CENTER & HRS SWIMMING FAMILY</div>
             <div class="cert-subheader">Sistem Evaluasi Pembelajaran Renang</div>
 
             <div class="cert-title">SERTIFIKAT KELULUSAN</div>
@@ -280,40 +294,38 @@
             
             <div class="cert-name"><?= esc($child['nama']) ?></div>
             <div class="cert-line"></div>
+            <div class="cert-serial">No. Sertifikat: <?= esc($cert['nomor_sertifikat']) ?> &nbsp;&middot;&nbsp; Tanggal: <?= date('d F Y', strtotime($cert['tanggal_lulus'])) ?></div>
             
-            <div class="cert-text">
+            <div class="cert-text" style="margin-bottom: 5px;">
                 Telah berhasil menyelesaikan seluruh kriteria penilaian teknik dan mental kelas renang terstruktur, serta dinyatakan <strong>LULUS & SELESAI</strong> pada tingkat kemampuan:
                 <br>
-                <strong style="font-size: 18px; display: block; margin: 8px 0; color: #D4AF37; font-family: 'Cinzel', serif;">
+                <strong style="font-size: 16px; display: block; margin: 6px 0; color: #D4AF37; font-family: 'Cinzel', serif;">
                     <?= esc($cert['nama_level']) ?>
                 </strong>
-                
-                <?php if (!empty($cert['tournament_name'])): ?>
-                    Dan diakui atas prestasi luar biasa pada kejuaraan <strong><?= esc($cert['tournament_name']) ?></strong> meraih <strong><?= esc($cert['prestasi']) ?></strong>.
-                <?php endif; ?>
             </div>
 
             <div class="cert-footer">
-                <div class="cert-sig-block">
-                    <div class="cert-sig-line">Orang Tua / Wali</div>
-                    <div class="cert-sig-title">Saksi Pendamping</div>
+                <div class="cert-sig-block" style="width: 220px;">
+                    <div style="height: 40px;"></div>
+                    <div class="cert-sig-line" style="margin-top: 0;">Reza Pattriota Putra S,Kom</div>
+                    <div class="cert-sig-title">Owner 11 Maret Sport Center</div>
                 </div>
 
                 <div class="cert-seal">
                     <div class="seal-gold">
-                        <div class="seal-text" style="font-size: 9px; font-weight: 800; border-bottom: 1px solid #7F5F00; padding-bottom: 2px; margin-bottom: 2px;">MSC</div>
+                        <div class="seal-text" style="font-size: 8px; font-weight: 800; border-bottom: 1px solid #7F5F00; padding-bottom: 2px; margin-bottom: 2px;">MSC x HRS</div>
                         <div class="seal-text">OFFICIAL</div>
                         <div class="seal-text">SEAL</div>
                     </div>
                 </div>
 
-                <div class="cert-sig-block">
-                    <div class="cert-sig-line"><?= esc($headCoachName) ?></div>
-                    <div class="cert-sig-title">Head Coach Penguji</div>
+                <div class="cert-sig-block" style="width: 220px;">
+                    <div style="height: 40px;"></div>
+                    <div class="cert-sig-line" style="margin-top: 0;">Heri Setiawan S.Pd</div>
+                    <div class="cert-sig-title">Owner HRS Swimming Family</div>
                 </div>
             </div>
 
-            <div class="cert-serial">No. Sertifikat: <?= esc($cert['nomor_sertifikat']) ?> · Tanggal: <?= date('d F Y', strtotime($cert['tanggal_lulus'])) ?></div>
         </div>
     </div>
 

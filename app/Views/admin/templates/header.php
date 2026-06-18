@@ -372,7 +372,7 @@
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <div class="d-flex align-items-center mb-2">
-                <img src="<?= base_url('logo.png?v=' . time()) ?>" alt="Logo" style="width: 32px; height: 32px; object-fit: contain; margin-right: 10px; border-radius: 6px;">
+                <img src="<?= app_logo('sportcenter_logo', 'logo.png') ?>" alt="Logo" style="width: 32px; height: 32px; object-fit: contain; margin-right: 10px; border-radius: 6px;">
                 <h4 class="mb-0">Renang Admin</h4>
             </div>
             <p class="mb-0 small text-light opacity-75">Selamat datang, <?= $nama ?? 'Admin' ?></p>

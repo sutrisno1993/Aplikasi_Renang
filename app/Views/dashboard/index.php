@@ -607,7 +607,7 @@
             <header class="header">
                 <div class="logo-container">
                     <div class="logo">
-                        <img src="<?= base_url('logo.png?v=' . time()) ?>" alt="Logo" style="width: 100%; height: 100%; object-fit: contain; border-radius: 12px;">
+                        <img src="<?= app_logo('sportcenter_logo', 'logo.png') ?>" alt="Logo" style="width: 100%; height: 100%; object-fit: contain; border-radius: 12px;">
                     </div>
                     <div class="brand-info">
                         <div class="brand-title">11 Maret Sport Center</div>
@@ -620,7 +620,7 @@
                 <!-- Hero Info & Akses Akun -->
                 <section class="hero-card">
                     <div class="text-center mb-4">
-                        <img src="<?= base_url('logo.png?v=' . time()) ?>" alt="Logo 11 Maret" style="max-width: 180px; height: auto;">
+                        <img src="<?= app_logo('sportcenter_logo', 'logo.png') ?>" alt="Logo 11 Maret" style="max-width: 180px; height: auto;">
                     </div>
                     <div class="hero-head">
                         <div class="hero-icon">

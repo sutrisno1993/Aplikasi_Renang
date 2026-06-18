@@ -244,6 +244,7 @@ $routes->group('admin', ['filter' => 'auth'], static function ($routes) {
         $routes->post('store', 'Admin\LogoController::store');
         $routes->post('update/(:num)', 'Admin\LogoController::update/$1');
         $routes->get('delete/(:num)', 'Admin\LogoController::delete/$1');
+        $routes->get('preview-cert', 'Admin\LogoController::previewCert');
     });
 });
 

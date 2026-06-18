@@ -391,7 +391,7 @@
                 <div class="topbar-inner">
                     <div class="top-left">
                         <div class="logo" aria-hidden="true">
-                            <img src="<?= base_url('logo.png?v=' . time()) ?>" alt="Logo" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;">
+                            <img src="<?= app_logo('sportcenter_logo', 'logo.png') ?>" alt="Logo" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;">
                         </div>
                         <div class="brand">
                             <p class="brand-title">Portal Orang Tua/Wali</p>

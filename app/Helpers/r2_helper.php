@@ -50,3 +50,45 @@ if (!function_exists('get_initials')) {
         return $initials;
     }
 }
+
+if (!function_exists('app_logo')) {
+    /**
+     * Get the Cloudflare R2 URL for a dynamic logo by its name from DB.
+     * Caches the logos statically per request to avoid multiple DB queries.
+     * 
+     * @param string $nama The identifier name of the logo (e.g. 'sportcenter_logo')
+     * @param string $defaultFallback Fallback image if not found
+     * @return string
+     */
+    function app_logo($nama, $defaultFallback = 'logo.png')
+    {
+        static $logoCache = null;
+        
+        if ($logoCache === null) {
+            try {
+                $db = \Config\Database::connect();
+                if ($db->tableExists('logos')) {
+                    $logos = $db->table('logos')->get()->getResultArray();
+                    $logoCache = [];
+                    foreach ($logos as $l) {
+                        $logoCache[$l['nama']] = r2_url($l['file_path']);
+                    }
+                } else {
+                    $logoCache = [];
+                }
+            } catch (\Exception $e) {
+                $logoCache = [];
+            }
+        }
+        
+        if (isset($logoCache[$nama]) && !empty($logoCache[$nama])) {
+            return $logoCache[$nama];
+        }
+        
+        if (filter_var($defaultFallback, FILTER_VALIDATE_URL)) {
+            return $defaultFallback;
+        }
+        
+        return base_url($defaultFallback);
+    }
+}

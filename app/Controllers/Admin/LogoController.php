@@ -135,4 +135,21 @@ class LogoController extends BaseController
 
         return redirect()->to('admin/logo');
     }
+
+    public function previewCert()
+    {
+        $data = [
+            'title' => 'Preview Sertifikat (Contoh)',
+            'child' => ['nama' => 'NAMA MURID CONTOH'],
+            'cert' => [
+                'nama_level' => 'LEVEL 2 - WATER CONFIDENCE',
+                'tournament_name' => '',
+                'prestasi' => '',
+                'nomor_sertifikat' => 'MSC/CERT/2026/001',
+                'tanggal_lulus' => date('Y-m-d')
+            ],
+            'headCoachName' => 'Head Coach Dummy'
+        ];
+        return view('certificate/print', $data);
+    }
 }

@@ -946,7 +946,7 @@ $(document).ready(function() {
                                 <div class="card-body" style="background: #FFFFFF; padding: 20px;">
                                     <div class="d-flex align-items-center justify-content-between mb-4 border-bottom pb-3">
                                         <div class="d-flex align-items-center" style="gap: 12px;">
-                                            <img src="<?= base_url('uploads/mandiri_logo.png') ?>" alt="Bank Mandiri Logo" class="img-fluid" style="max-height: 28px; width: auto; object-fit: contain; border-radius: 4px;">
+                                            <img src="<?= app_logo('mandiri_logo', 'uploads/mandiri_logo.png') ?>" alt="Bank Mandiri Logo" class="img-fluid" style="max-height: 28px; width: auto; object-fit: contain; border-radius: 4px;">
                                             <div>
                                                 <div class="text-muted small" style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Bank</div>
                                                 <div class="font-weight-bold" style="font-size: 13px; color: var(--text-main);">Mandiri</div>
