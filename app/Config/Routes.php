@@ -236,6 +236,7 @@ $routes->group('admin', ['filter' => 'auth'], static function ($routes) {
     $routes->post('coach/save', 'Admin::coachSave');
     $routes->post('coach/update/(:num)', 'Admin::coachUpdate/$1');
     $routes->get('coach/delete/(:num)', 'Admin::coachDelete/$1');
+    $routes->get('coach/toggle-registration', 'Admin::toggleCoachRegistration');
 });
 
 // (coach routes are defined above, before the admin group)

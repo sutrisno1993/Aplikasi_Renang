@@ -1,3 +1,8 @@
+<?php
+$settingModel = new \App\Models\SettingModel();
+$regSetting = $settingModel->getSetting('coach_registration_open');
+$registrationOpen = $regSetting && $regSetting['value'] == '1';
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -145,7 +150,11 @@
             </form>
 
             <div class="footer-link">
-                Belum punya akun? <a href="<?= base_url('coach/register') ?>">Daftar di sini</a>
+                <?php if ($registrationOpen): ?>
+                    Belum punya akun? <a href="<?= base_url('coach/register') ?>">Daftar di sini</a>
+                <?php else: ?>
+                    <span style="color: #9CA3AF; font-size: 12px;"><i class="fas fa-lock" style="margin-right: 4px;"></i>Pendaftaran coach saat ini ditutup</span>
+                <?php endif; ?>
             </div>
         </div>
 

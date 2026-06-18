@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Models\PembayaranModel;
 use App\Models\AnakModel;
 use App\Models\JenisLesModel;
+use App\Models\SettingModel;
 
 class Admin extends BaseController
 {
@@ -223,12 +224,17 @@ class Admin extends BaseController
         $levelModel = new \App\Models\LevelModel();
         $levels = $levelModel->orderBy('urutan', 'ASC')->findAll();
         
+        $settingModel = new SettingModel();
+        $regSetting = $settingModel->getSetting('coach_registration_open');
+        $registrationOpen = $regSetting ? $regSetting['value'] == '1' : false;
+        
         $data = [
             'title' => 'Kelola Pelatih',
             'active' => 'coach',
             'nama' => session()->get('nama'),
             'coaches' => $this->coachModel->findAll(),
-            'levels' => $levels
+            'levels' => $levels,
+            'registrationOpen' => $registrationOpen
         ];
         
         return view('admin/coach/index', $data);
@@ -297,6 +303,22 @@ class Admin extends BaseController
             session()->setFlashdata('error', 'Gagal menghapus data pelatih');
         }
 
+        return redirect()->to('admin/coach');
+    }
+
+    public function toggleCoachRegistration()
+    {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/auth');
+        }
+
+        $settingModel = new SettingModel();
+        $current = $settingModel->getSetting('coach_registration_open');
+        $newValue = ($current && $current['value'] == '1') ? '0' : '1';
+        $settingModel->updateSetting('coach_registration_open', $newValue);
+
+        $status = $newValue == '1' ? 'dibuka' : 'ditutup';
+        session()->setFlashdata('success', "Pendaftaran coach berhasil {$status}.");
         return redirect()->to('admin/coach');
     }
 

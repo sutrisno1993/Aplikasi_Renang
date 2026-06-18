@@ -31,14 +31,33 @@
     ?>
 
     <div class="card border-0 shadow-sm rounded-4">
-        <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
+        <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
             <div>
                 <h5 class="mb-0 fw-bold text-primary">Daftar Pelatih (Coach)</h5>
                 <p class="text-muted small mb-0">Kelola informasi pelatih, hak akses, dan pembagian tugas level tanggung jawab</p>
             </div>
-            <button type="button" class="btn btn-primary rounded-pill px-4 shadow-sm" data-bs-toggle="modal" data-bs-target="#tambahCoachModal">
-                <i class="fas fa-plus me-1"></i> Tambah Pelatih
-            </button>
+            <div class="d-flex gap-2 align-items-center flex-wrap">
+                <!-- Toggle Pendaftaran Coach -->
+                <?php if ($registrationOpen): ?>
+                    <a href="<?= base_url('admin/coach/toggle-registration') ?>"
+                       class="btn btn-success rounded-pill px-4 shadow-sm"
+                       onclick="return confirm('Tutup pendaftaran coach? Tombol \'Daftar\' di halaman login coach akan disembunyikan.')"
+                       title="Pendaftaran saat ini TERBUKA — klik untuk menutup">
+                        <i class="fas fa-door-open me-1"></i> Pendaftaran Terbuka
+                    </a>
+                <?php else: ?>
+                    <a href="<?= base_url('admin/coach/toggle-registration') ?>"
+                       class="btn btn-outline-secondary rounded-pill px-4 shadow-sm"
+                       onclick="return confirm('Buka pendaftaran coach? Tombol \'Daftar\' akan muncul di halaman login coach.')"
+                       title="Pendaftaran saat ini DITUTUP — klik untuk membuka">
+                        <i class="fas fa-door-closed me-1"></i> Pendaftaran Ditutup
+                    </a>
+                <?php endif; ?>
+
+                <button type="button" class="btn btn-primary rounded-pill px-4 shadow-sm" data-bs-toggle="modal" data-bs-target="#tambahCoachModal">
+                    <i class="fas fa-plus me-1"></i> Tambah Pelatih
+                </button>
+            </div>
         </div>
         <div class="card-body">
             <div class="table-responsive">
