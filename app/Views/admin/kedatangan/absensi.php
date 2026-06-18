@@ -7,82 +7,101 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.id.min.js"></script>
 
-<div class="container-fluid">
-    <div class="card">
-        <div class="card-header bg-white d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">
-                Absensi Kedatangan - <?= date('d-m-Y', strtotime($jadwal['tanggal'])) ?>
-                (<?= date('H:i', strtotime($jadwal['jam_mulai'])) ?> - <?= date('H:i', strtotime($jadwal['jam_selesai'])) ?>)
-            </h5>
-            <div>
-                <a href="<?= base_url('admin/kedatangan/export-excel/' . $jadwal['id']) ?>" class="btn btn-success">
-                    <i class="fas fa-file-excel"></i> Export Excel
+<div class="container-fluid px-4 py-3">
+
+    <!-- ── Page Header ── -->
+    <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <a href="<?= base_url('admin/kedatangan') ?>" class="btn btn-sm btn-light border text-secondary px-2 py-1" title="Kembali ke Daftar Jadwal">
+                    <i class="fas fa-arrow-left fa-xs"></i>
                 </a>
-                <a href="<?= base_url('admin/kedatangan/cetak-laporan/' . $jadwal['id']) ?>" class="btn btn-danger" target="_blank">
-                    <i class="fas fa-file-pdf"></i> Download PDF
-                </a>
-                <button type="button" class="btn btn-info" id="sortBtn" onclick="sortTableByName()">
-                    <i class="fas fa-sort-alpha-down"></i> Urutkan Nama
-                </button>
-                <button type="button" class="btn btn-warning" id="finishBtn" onclick="handleSaveClick('selesai')">
-                    <i class="fas fa-flag-checkered"></i> Selesaikan Jadwal
-                </button>
-                <?php if (($jadwal['status'] ?? '') === 'selesai'): ?>
-                    <a href="<?= base_url('admin/kedatangan/buka/' . $jadwal['id']) ?>" class="btn btn-outline-primary">
-                        <i class="fas fa-undo"></i> Buka Lagi
-                    </a>
-                <?php endif; ?>
-                <a href="<?= base_url('admin/kedatangan/tambah-peserta-manual-form/' . $jadwal['id']) ?>" class="btn btn-primary">
-                    <i class="fas fa-plus"></i> Tambah Peserta Manual
-                </a>
-                <a href="<?= base_url('admin/kedatangan') ?>" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i> Kembali
-                </a>
+                <h5 class="mb-0 fw-bold">Absensi Kedatangan</h5>
+                <span class="badge bg-<?= ($jadwal['status'] ?? 'aktif') === 'selesai' ? 'success' : 'primary' ?> rounded-pill">
+                    <?= ucfirst($jadwal['status'] ?? 'aktif') ?>
+                </span>
+            </div>
+            <div class="text-muted small ms-4 ps-2">
+                <i class="fas fa-calendar-alt me-1"></i>
+                <?= date('l, d M Y', strtotime($jadwal['tanggal'])) ?>
+                &nbsp;·&nbsp;
+                <i class="fas fa-clock me-1"></i>
+                <?= date('H:i', strtotime($jadwal['jam_mulai'])) ?> – <?= date('H:i', strtotime($jadwal['jam_selesai'])) ?> WIB
             </div>
         </div>
-        <div class="card-body">
-            <?php if (session()->getFlashdata('success')) : ?>
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <?= session()->getFlashdata('success') ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
+        <!-- Action buttons -->
+        <div class="d-flex gap-2 flex-wrap">
+            <button type="button" class="btn btn-outline-secondary btn-sm px-3" onclick="sortTableByName()" title="Urutkan nama A-Z">
+                <i class="fas fa-sort-alpha-down me-1"></i> Urutkan
+            </button>
+            <?php if (($jadwal['status'] ?? '') === 'selesai'): ?>
+                <a href="<?= base_url('admin/kedatangan/buka/' . $jadwal['id']) ?>"
+                   class="btn btn-outline-primary btn-sm px-3">
+                    <i class="fas fa-undo me-1"></i> Buka Lagi
+                </a>
+            <?php else: ?>
+                <button type="button" class="btn btn-warning btn-sm px-3 fw-semibold"
+                        onclick="handleSaveClick('selesai')">
+                    <i class="fas fa-flag-checkered me-1"></i> Selesaikan Jadwal
+                </button>
             <?php endif; ?>
-            
-            <?php if (session()->getFlashdata('error')) : ?>
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <?= session()->getFlashdata('error') ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            <?php endif; ?>
+        </div>
+    </div>
 
-            <div class="card mb-3">
-                <div class="card-body">
-                    <form id="checkinForm" action="<?= base_url('admin/kedatangan/checkin') ?>" method="post" class="row g-2 align-items-end" onsubmit="disableCheckinButton()">
-                        <?= csrf_field() ?>
-                        <input type="hidden" name="jadwal_id" value="<?= $jadwal['id'] ?>">
-                        <div class="col-md-6">
-                            <label for="anak_id_scan" class="form-label">Check-in Dadakan (Scan Barcode / ID Anak)</label>
-                            <input type="text" class="form-control" id="anak_id_scan" name="anak_id_scan" placeholder="Scan barcode (ID anak) lalu Enter" autocomplete="off">
-                            <div class="form-text">Sistem otomatis menambahkan peserta ke jadwal dan menandai hadir.</div>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="anak_nama_search" class="form-label">Cari Nama Anak</label>
-                            <input type="text" class="form-control" id="anak_nama_search" placeholder="Ketik nama / nama panggilan..." autocomplete="off">
-                            <div class="position-relative">
-                                <div class="list-group position-absolute w-100" id="anakSearchResults" style="z-index: 5; display: none;"></div>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <button type="submit" class="btn btn-primary w-100">Check-in</button>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="text-muted small">
-                                Jika sisa pertemuan habis, lakukan pembayaran dulu (bisa via Pembayaran Manual).
-                            </div>
-                        </div>
-                    </form>
+    <!-- Flash messages -->
+    <?php if (session()->getFlashdata('success')): ?>
+        <div class="alert alert-success alert-dismissible fade show py-2 px-3 mb-3" role="alert" style="border-radius:10px;font-size:13.5px;">
+            <i class="fas fa-check-circle me-1"></i> <?= session()->getFlashdata('success') ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    <?php endif; ?>
+    <?php if (session()->getFlashdata('error')): ?>
+        <div class="alert alert-danger alert-dismissible fade show py-2 px-3 mb-3" role="alert" style="border-radius:10px;font-size:13.5px;">
+            <i class="fas fa-exclamation-circle me-1"></i> <?= session()->getFlashdata('error') ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    <?php endif; ?>
+
+    <!-- ── Check-in Bar ── -->
+    <div class="card border-0 shadow-sm mb-3" style="border-radius:12px;overflow:hidden;">
+        <div class="card-body py-3 px-4" style="background:linear-gradient(135deg,#1d3a6e 0%,#2d4fa1 100%);">
+            <form id="checkinForm" action="<?= base_url('admin/kedatangan/checkin') ?>" method="post"
+                  class="row g-2 align-items-end" onsubmit="disableCheckinButton()">
+                <?= csrf_field() ?>
+                <input type="hidden" name="jadwal_id" value="<?= $jadwal['id'] ?>">
+                <div class="col-auto">
+                    <label class="form-label text-white-50 small mb-1">Scan Barcode / ID</label>
+                    <input type="text" class="form-control form-control-sm" id="anak_id_scan"
+                           name="anak_id_scan" placeholder="Scan ID lalu Enter…"
+                           autocomplete="off"
+                           style="width:220px;border-radius:8px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;">
                 </div>
-            </div>
+                <div class="col" style="max-width:320px;">
+                    <label class="form-label text-white-50 small mb-1">Cari Nama Anak</label>
+                    <div class="position-relative">
+                        <input type="text" class="form-control form-control-sm" id="anak_nama_search"
+                               placeholder="Ketik nama…" autocomplete="off"
+                               style="border-radius:8px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;">
+                        <div class="list-group position-absolute w-100" id="anakSearchResults"
+                             style="z-index:10;display:none;top:calc(100% + 4px);border-radius:8px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.15);"></div>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <label class="form-label opacity-0 small mb-1">_</label>
+                    <button type="submit" class="btn btn-light btn-sm fw-semibold px-4 d-block"
+                            style="border-radius:8px;color:#1d3a6e;">
+                        <i class="fas fa-sign-in-alt me-1"></i> Check-in
+                    </button>
+                </div>
+                <div class="col-12">
+                    <small class="text-white-50">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Sistem otomatis menambahkan peserta dan menandai hadir. Jika sisa pertemuan habis, lakukan Pembayaran Manual terlebih dahulu.
+                    </small>
+                </div>
+            </form>
+        </div>
+    </div>
 
             <div class="row mb-3">
                 <div class="col-md-4">
@@ -167,121 +186,95 @@
             </div>
             <?php endif; ?>
 
-            <form id="absensiForm" action="<?= base_url('admin/kedatangan/save-all-absensi') ?>" method="post">
-                <?= csrf_field() ?>
-                <input type="hidden" name="jadwal_id" value="<?= $jadwal['id'] ?>">
-                <input type="hidden" name="aksi" id="aksiInput" value="simpan">
-                <div class="table-responsive">
-                    <table class="table table-hover table-striped" id="absensiTable">
-                        <thead class="table-light">
-                            <tr>
-                                <th class="text-center" style="width: 5%">No</th>
-                                <th class="text-center" style="width: 8%">ID</th>
-                                <th style="width: 30%">Nama Anak</th>
-                                <th style="width: 15%">Jenis Les</th>
-                                <th style="width: 30%">Status Kehadiran</th>
-                                <th class="text-center" style="width: 12%">Hapus</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if(empty($peserta)): ?>
-                                <tr>
-                                    <td colspan="6" class="text-center">Tidak ada peserta terdaftar</td>
-                                </tr>
-                            <?php else: ?>
-                                <?php $i = 1; foreach($peserta as $p): ?>
-                                <?php 
-                                    $kehadiran_siswa = array_filter($kehadiran, function($k) use ($p) {
-                                        return $k['anak_id'] == $p['id'];
-                                    });
-                                    $kehadiran_siswa = !empty($kehadiran_siswa) ? reset($kehadiran_siswa) : null;
-                                    
-                                    // Deteksi Private
-                                    $isPrivate = str_contains(strtolower($p['jenis_les_nama'] ?? ''), 'private');
-                                ?>
-                                <tr class="<?= $isPrivate ? 'table-danger' : '' ?>">
-                                    <td class="text-center"><?= $i++ ?></td>
-                                    <td class="text-center">
-                                        <span class="badge bg-secondary">#<?= $p['id'] ?></span>
-                                    </td>
-                                    <td><?= $p['nama'] ?></td>
-                                    <td>
-                                        <?php if (!empty($p['jenis_les_nama'])): ?>
-                                            <span class="badge <?= $isPrivate ? 'bg-danger' : 'bg-info text-dark' ?>">
-                                                <?= $p['jenis_les_nama'] ?>
-                                            </span>
-                                        <?php else: ?>
-                                            <span class="badge bg-secondary">Belum terdaftar</span>
-                                        <?php endif; ?>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex align-items-center gap-2">
-                                            <select class="form-select form-select-sm" name="status_kehadiran[<?= $p['id'] ?>]" required style="width: auto">
-                                                <option value="hadir" <?= ($kehadiran_siswa['status_kehadiran'] ?? '') == 'hadir' ? 'selected' : '' ?>>Hadir</option>
-                                                <option value="tidak_hadir" <?= ($kehadiran_siswa['status_kehadiran'] ?? '') == 'tidak_hadir' ? 'selected' : '' ?>>Tidak Hadir</option>
-                                                <option value="izin" <?= ($kehadiran_siswa['status_kehadiran'] ?? '') == 'izin' ? 'selected' : '' ?>>Izin</option>
-                                            </select>
-                                            <span class="badge bg-info">
-                                                Pkt:<?= $p['paket_ke'] ?? 1 ?> Ke-<?= $p['pertemuan_ke'] ?? 0 ?> (Sisa: <?= $p['sisa_pertemuan_display'] ?? 0 ?>)
-                                            </span>
-                                        </div>
-                                        <input type="hidden" name="anak_id[]" value="<?= $p['id'] ?>">
-                                    </td>
-                                    <td class="text-center">
-                                        <a href="<?= base_url('admin/kedatangan/delete-peserta/' . $jadwal['id'] . '/' . $p['id']) ?>" 
-                                            class="text-danger">
-                                            <i class="fas fa-times-circle fa-lg"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
+            <!-- ── Student Attendance List Card ── -->
+            <div class="card border-0 shadow-sm" style="border-radius: 12px; overflow: hidden;">
+                <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0 fw-bold text-primary">
+                        <i class="fas fa-users me-2"></i>Daftar Kehadiran Siswa
+                    </h6>
+                    <span class="text-muted small">Cari di kolom check-in di atas untuk menambahkan peserta baru</span>
                 </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<?= $this->include('admin/templates/footer') ?>
-
-<!-- Modal Tambah Peserta Manual -->
-<div class="modal fade" id="tambahPesertaManualModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Tambah Peserta Manual</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <div class="card-body p-0">
+                    <form id="absensiForm" action="<?= base_url('admin/kedatangan/save-all-absensi') ?>" method="post">
+                        <?= csrf_field() ?>
+                        <input type="hidden" name="jadwal_id" value="<?= $jadwal['id'] ?>">
+                        <input type="hidden" name="aksi" id="aksiInput" value="simpan">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0" id="absensiTable">
+                                <thead class="table-light text-muted small text-uppercase">
+                                    <tr>
+                                        <th class="text-center" style="width: 5%">No</th>
+                                        <th class="text-center" style="width: 10%">ID</th>
+                                        <th style="width: 35%">Nama Anak</th>
+                                        <th style="width: 15%">Jenis Les</th>
+                                        <th style="width: 25%">Status Kehadiran</th>
+                                        <th class="text-center" style="width: 10%">Hapus</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php if(empty($peserta)): ?>
+                                        <tr>
+                                            <td colspan="6" class="text-center text-muted py-4">Tidak ada peserta terdaftar</td>
+                                        </tr>
+                                    <?php else: ?>
+                                        <?php $i = 1; foreach($peserta as $p): ?>
+                                        <?php 
+                                            $kehadiran_siswa = array_filter($kehadiran, function($k) use ($p) {
+                                                return $k['anak_id'] == $p['id'];
+                                            });
+                                            $kehadiran_siswa = !empty($kehadiran_siswa) ? reset($kehadiran_siswa) : null;
+                                            
+                                            // Deteksi Private
+                                            $isPrivate = str_contains(strtolower($p['jenis_les_nama'] ?? ''), 'private');
+                                        ?>
+                                        <tr class="<?= $isPrivate ? 'table-danger' : '' ?>">
+                                            <td class="text-center text-muted fw-bold"><?= $i++ ?></td>
+                                            <td class="text-center">
+                                                <span class="badge bg-secondary">#<?= $p['id'] ?></span>
+                                            </td>
+                                            <td>
+                                                <span class="fw-bold text-dark"><?= esc($p['nama']) ?></span>
+                                            </td>
+                                            <td>
+                                                <?php if (!empty($p['jenis_les_nama'])): ?>
+                                                    <span class="badge <?= $isPrivate ? 'bg-danger' : 'bg-info text-dark' ?>">
+                                                        <?= esc($p['jenis_les_nama']) ?>
+                                                    </span>
+                                                <?php else: ?>
+                                                    <span class="badge bg-secondary">Belum terdaftar</span>
+                                                <?php endif; ?>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <select class="form-select form-select-sm" name="status_kehadiran[<?= $p['id'] ?>]" required style="width: auto">
+                                                        <option value="hadir" <?= ($kehadiran_siswa['status_kehadiran'] ?? '') == 'hadir' ? 'selected' : '' ?>>Hadir</option>
+                                                        <option value="tidak_hadir" <?= ($kehadiran_siswa['status_kehadiran'] ?? '') == 'tidak_hadir' ? 'selected' : '' ?>>Tidak Hadir</option>
+                                                        <option value="izin" <?= ($kehadiran_siswa['status_kehadiran'] ?? '') == 'izin' ? 'selected' : '' ?>>Izin</option>
+                                                    </select>
+                                                    <span class="badge bg-light text-dark border">
+                                                        Pkt:<?= $p['paket_ke'] ?? 1 ?> Ke-<?= $p['pertemuan_ke'] ?? 0 ?> (Sisa: <?= $p['sisa_pertemuan_display'] ?? 0 ?>)
+                                                    </span>
+                                                </div>
+                                                <input type="hidden" name="anak_id[]" value="<?= $p['id'] ?>">
+                                            </td>
+                                            <td class="text-center">
+                                                <a href="<?= base_url('admin/kedatangan/delete-peserta/' . $jadwal['id'] . '/' . $p['id']) ?>" 
+                                                   class="btn btn-sm btn-light border text-danger rounded-circle p-2"
+                                                   onclick="return confirm('Hapus peserta dari jadwal ini?')">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <form action="<?= base_url('admin/kedatangan/tambah-peserta-manual') ?>" method="post">
-                <?= csrf_field() ?>
-                <div class="modal-body">
-                    <input type="hidden" name="jadwal_id" value="<?= $jadwal['id'] ?>">
-                    <div class="mb-3">
-                        <label for="search_id" class="form-label">Cari ID Anak</label>
-                        <input type="text" class="form-control mb-2" id="search_id" placeholder="Masukkan ID anak...">
-                    </div>
-                    <div class="mb-3">
-                        <label for="anak_id" class="form-label">Pilih Anak</label>
-                        <select class="form-select" id="anak_id" name="anak_id" required>
-                            <option value="">Pilih Anak</option>
-                            <?php foreach($semua_anak as $a): ?>
-                            <option value="<?= $a['id'] ?>" data-id="<?= $a['id'] ?>">
-                                <?= $a['nama'] ?> (<?= $a['nama_panggilan'] ?>) - ID: <?= $a['id'] ?>
-                            </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary">Tambah</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+
+        </div> <!-- Tutup container-fluid -->
 
 <!-- Pindahkan semua script ke sini -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -539,8 +532,6 @@ setInterval(refreshAbsensiData, 30000);
     });
 })();
 </script>
-</body>
-</html>
 
 <style>
 /* Tambahkan CSS untuk memperbaiki tampilan */
@@ -562,3 +553,5 @@ textarea.form-control-sm {
     padding: 0.25rem 0.5rem;
 }
 </style>
+
+<?= $this->include('admin/templates/footer') ?>
