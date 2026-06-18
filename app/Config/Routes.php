@@ -47,6 +47,11 @@ $routes->group('coach', ['filter' => 'coachAuth'], static function ($routes) {
     // Coach Management (Head Coach Only)
     $routes->get('pelatih', 'Coach\Evaluasi::coachList');
     $routes->post('pelatih/update/(:num)', 'Coach\Evaluasi::coachUpdate/$1');
+
+    // Jadwal Les - Coach dapat melihat dan join jadwal
+    $routes->get('jadwal', 'Coach\Evaluasi::jadwalList');
+    $routes->get('jadwal/join/(:num)', 'Coach\Evaluasi::joinJadwal/$1');
+    $routes->get('jadwal/cancel/(:num)', 'Coach\Evaluasi::cancelJadwal/$1');
 });
 
 $routes->get('admin', 'Auth::index');
@@ -112,6 +117,7 @@ $routes->group('parent', ['filter' => 'parentAuth'], static function ($routes) {
     // Curriculum & Progress
     $routes->get('curriculum', 'Parent\Curriculum::index');
     $routes->get('certificate/download/(:num)/(:num)', 'Parent\Curriculum::downloadCertificate/$1/$2');
+    $routes->get('raport/download/(:num)/(:num)', 'Parent\Curriculum::downloadRaport/$1/$2');
 });
 
 $routes->group('admin', ['filter' => 'auth'], static function ($routes) {

@@ -547,4 +547,116 @@ class Evaluasi extends BaseController
 
         return redirect()->to('coach/pelatih');
     }
+
+    public function jadwalList()
+    {
+        if (!$this->checkAuth()) {
+            return redirect()->to('/coach/login');
+        }
+
+        $coachId = session()->get('coach_id');
+        $db = \Config\Database::connect();
+
+        // Ambil semua jadwal aktif beserta jenis les dan coach yang sudah join
+        $jadwal = $db->table('schedules s')
+            ->select('s.*, GROUP_CONCAT(DISTINCT jl.nama_les ORDER BY jl.nama_les SEPARATOR ", ") as jenis_les_nama')
+            ->join('schedule_jenis_les sjl', 'sjl.schedule_id = s.id', 'left')
+            ->join('jenis_les jl', 'jl.id = sjl.jenis_les_id', 'left')
+            ->where('s.status', 'aktif')
+            ->groupBy('s.id')
+            ->orderBy('s.tanggal', 'ASC')
+            ->get()
+            ->getResultArray();
+
+        // Untuk setiap jadwal, ambil data coach yang sudah join dan siswa terdaftar
+        foreach ($jadwal as &$j) {
+            $j['coaches'] = $db->table('schedule_coaches sc')
+                ->select('c.id, c.nama, c.keahlian')
+                ->join('coach c', 'c.id = sc.coach_id')
+                ->where('sc.schedule_id', $j['id'])
+                ->get()
+                ->getResultArray();
+
+            $j['students'] = $db->table('schedule_students ss')
+                ->select('a.nama as nama_anak, jl2.nama_les')
+                ->join('anak a', 'a.id = ss.anak_id')
+                ->join('jenis_les jl2', 'jl2.id = a.jenis_les_id', 'left')
+                ->where('ss.schedule_id', $j['id'])
+                ->get()
+                ->getResultArray();
+
+            // Tandai apakah coach ini sudah join
+            $j['sudah_join'] = false;
+            foreach ($j['coaches'] as $c) {
+                if ((int)$c['id'] === (int)$coachId) {
+                    $j['sudah_join'] = true;
+                    break;
+                }
+            }
+        }
+        unset($j);
+
+        $data = [
+            'title'  => 'Jadwal Les',
+            'jadwal' => $jadwal,
+        ];
+
+        return view('coach/jadwal_list', $data);
+    }
+
+    public function joinJadwal($scheduleId)
+    {
+        if (!$this->checkAuth()) {
+            return redirect()->to('/coach/login');
+        }
+
+        $coachId = session()->get('coach_id');
+        $db = \Config\Database::connect();
+
+        // Cek jadwal valid
+        $jadwal = $db->table('schedules')->where('id', $scheduleId)->where('status', 'aktif')->get()->getRowArray();
+        if (!$jadwal) {
+            session()->setFlashdata('error', 'Jadwal tidak ditemukan atau tidak aktif.');
+            return redirect()->to('coach/jadwal');
+        }
+
+        // Cek sudah join atau belum
+        $existing = $db->table('schedule_coaches')
+            ->where('schedule_id', $scheduleId)
+            ->where('coach_id', $coachId)
+            ->countAllResults();
+
+        if ($existing > 0) {
+            session()->setFlashdata('error', 'Anda sudah bergabung di jadwal ini.');
+            return redirect()->to('coach/jadwal');
+        }
+
+        $db->table('schedule_coaches')->insert([
+            'schedule_id' => $scheduleId,
+            'coach_id'    => $coachId,
+            'created_at'  => date('Y-m-d H:i:s'),
+            'updated_at'  => date('Y-m-d H:i:s'),
+        ]);
+
+        session()->setFlashdata('success', 'Berhasil bergabung ke jadwal!');
+        return redirect()->to('coach/jadwal');
+    }
+
+    public function cancelJadwal($scheduleId)
+    {
+        if (!$this->checkAuth()) {
+            return redirect()->to('/coach/login');
+        }
+
+        $coachId = session()->get('coach_id');
+        $db = \Config\Database::connect();
+
+        $db->table('schedule_coaches')
+            ->where('schedule_id', $scheduleId)
+            ->where('coach_id', $coachId)
+            ->delete();
+
+        session()->setFlashdata('success', 'Berhasil membatalkan keikutsertaan di jadwal.');
+        return redirect()->to('coach/jadwal');
+    }
 }

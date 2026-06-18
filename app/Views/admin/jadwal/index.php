@@ -16,6 +16,20 @@
                 </div>
             <?php endif; ?>
 
+            <?php if (session()->getFlashdata('error')) : ?>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <?php 
+                        $err = session()->getFlashdata('error');
+                        if (is_array($err)) {
+                            echo implode('<br>', $err);
+                        } else {
+                            echo esc($err);
+                        }
+                    ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <?php endif; ?>
+
             <div class="table-responsive">
                 <table class="table table-hover" id="jadwalTable">
                     <thead>
@@ -208,7 +222,7 @@
                     <!-- Tambahkan field untuk memilih multiple coach -->
                     <div class="mb-3">
                         <label for="coach_id<?= $j['id'] ?>" class="form-label">Pelatih</label>
-                        <select class="form-select" id="coach_id<?= $j['id'] ?>" name="coach_id[]" multiple required>
+                        <select class="form-select" id="coach_id<?= $j['id'] ?>" name="coach_id[]" multiple>
                             <?php foreach($coaches as $coach): ?>
                                 <option value="<?= $coach['id'] ?>" 
                                     <?= in_array($coach['id'], explode(',', $j['coach_ids'] ?? '')) ? 'selected' : '' ?>>

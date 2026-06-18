@@ -36,7 +36,7 @@ class JadwalController extends BaseController
             'materi' => 'required',
             'kapasitas' => 'required|numeric|greater_than[0]',
             'jenis_latihan' => 'required|in_list[private,group]',
-            'coach_id' => 'required'
+            'coach_id' => 'permit_empty'
         ]);
 
         if (!$validation) {
@@ -132,7 +132,7 @@ class JadwalController extends BaseController
             'materi' => 'required',
             'kapasitas' => 'required|numeric|greater_than[0]',
             'jenis_latihan' => 'required|in_list[private,group]',
-            'coach_id' => 'required'
+            'coach_id' => 'permit_empty'
         ]);
 
         if (!$validation) {
@@ -171,6 +171,18 @@ class JadwalController extends BaseController
                     'schedule_id' => $id,
                     'jenis_les_id' => $les_id
                 ]);
+            }
+
+            // Update coach relations
+            $db->table('schedule_coaches')->where('schedule_id', $id)->delete();
+            $coach_ids = $this->request->getPost('coach_id');
+            if ($coach_ids) {
+                foreach ($coach_ids as $coach_id) {
+                    $db->table('schedule_coaches')->insert([
+                        'schedule_id' => $id,
+                        'coach_id'    => $coach_id
+                    ]);
+                }
             }
 
             $db->transComplete();

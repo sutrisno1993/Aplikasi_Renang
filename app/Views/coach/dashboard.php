@@ -33,6 +33,12 @@ $isHead     = $coachRole === 'head_coach';
         <div style="font-size:11px;color:#6B7280;">Input nilai perkembangan siswa</div>
     </a>
 
+    <a href="<?= base_url('coach/jadwal') ?>" style="background:#fff;border-radius:16px;padding:16px;border:1px solid rgba(5,150,105,0.1);box-shadow:0 2px 8px rgba(0,0,0,0.04);text-decoration:none;color:#1F2937;display:flex;flex-direction:column;gap:8px;transition:all 0.2s;">
+        <div style="width:40px;height:40px;border-radius:12px;background:rgba(16,185,129,0.1);display:grid;place-items:center;font-size:18px;">📅</div>
+        <div style="font-size:13px;font-weight:700;">Jadwal Les</div>
+        <div style="font-size:11px;color:#6B7280;">Lihat & bergabung ke jadwal</div>
+    </a>
+
     <a href="<?= base_url('coach/ujian') ?>" style="background:#fff;border-radius:16px;padding:16px;border:1px solid rgba(5,150,105,0.1);box-shadow:0 2px 8px rgba(0,0,0,0.04);text-decoration:none;color:#1F2937;display:flex;flex-direction:column;gap:8px;transition:all 0.2s;">
         <div style="width:40px;height:40px;border-radius:12px;background:rgba(14,165,233,0.1);display:grid;place-items:center;font-size:18px;">🎓</div>
         <div style="font-size:13px;font-weight:700;">Ujian Kenaikan</div>

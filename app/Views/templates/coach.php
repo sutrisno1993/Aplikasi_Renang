@@ -217,6 +217,7 @@
         .nav-grid { display: grid; gap: 4px; }
         .nav-grid-4 { grid-template-columns: repeat(4, 1fr); }
         .nav-grid-5 { grid-template-columns: repeat(5, 1fr); }
+        .nav-grid-6 { grid-template-columns: repeat(6, 1fr); }
         .nav-item {
             border-radius: 12px; padding: 6px 4px;
             display: flex; flex-direction: column; align-items: center; gap: 4px;
@@ -285,7 +286,7 @@
         <?php if (session()->get('coach_isLoggedIn')): ?>
         <nav class="bottom-nav" aria-label="Navigasi bawah">
             <?php $isHeadCoach = session()->get('coach_role') === 'head_coach'; ?>
-            <div class="nav-grid <?= $isHeadCoach ? 'nav-grid-5' : 'nav-grid-4' ?>">
+            <div class="nav-grid <?= $isHeadCoach ? 'nav-grid-6' : 'nav-grid-5' ?>">
                 <a class="nav-item" href="<?= base_url('coach/dashboard') ?>">
                     <span class="nav-icon">🏠</span>
                     Home
@@ -304,6 +305,10 @@
                     Pelatih
                 </a>
                 <?php endif; ?>
+                <a class="nav-item" href="<?= base_url('coach/jadwal') ?>">
+                    <span class="nav-icon">📅</span>
+                    Jadwal
+                </a>
                 <a class="nav-item" href="<?= base_url('coach/logout') ?>">
                     <span class="nav-icon">🚪</span>
                     Keluar
